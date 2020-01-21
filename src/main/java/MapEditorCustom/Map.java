@@ -17,8 +17,8 @@ public class Map {
     int tilesW,tilesH;
     
     public Map(){
-        tilesW = 10;
-        tilesH = 10;
+        tilesW = 20;
+        tilesH = 20;
         tiles = new Tile[tilesW][tilesH];
     }
     
@@ -31,7 +31,7 @@ public class Map {
     public void setClear(){
         for(int y = 0;y<tilesH;y++){
             for(int x = 0;x<tilesW;x++){
-                tiles[x][y] = new BlankTile();
+                tiles[x][y] = new Tile();
             }
         }
     }

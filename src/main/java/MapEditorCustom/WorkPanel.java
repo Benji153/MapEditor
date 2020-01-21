@@ -26,21 +26,26 @@ public class WorkPanel extends JPanel implements Runnable{
     public WorkPanel(){
         map = new Map();
         map.setClear();
-        tileWidth = 50;
-        tileHeight = 50;
+        tileWidth = 25;
+        tileHeight = 25;
         update = new Thread(this);
     }
     
     public void newMap(int tilesX,int tilesY){
-        map = new Map();
+        map = new Map(tilesX,tilesY);
         map.setClear();
         
     }
     
     @Override
     public void paintComponent(Graphics g) {
-        g.setColor(Color.BLUE);
+        g.setColor(Color.gray);
         g.fillRect(0,0,this.getWidth(),this.getHeight());
+        g.setColor(Color.BLACK);
+        int scrWidthDiv = this.getWidth() / 5;
+        for(int i = 0;i<5;i++){
+            g.drawLine(i * scrWidthDiv, this.getHeight(), (i+1)*scrWidthDiv, 0);
+        }
         draw(g);
     }
     

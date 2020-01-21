@@ -8,18 +8,20 @@ package MapEditorCustom;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.Random;
 
 /**
  *
  * @author benji
  */
-public abstract class Tile {
+public class Tile {
     
     Image img;
     Color color;
+    Random rand = new Random();
     
     public Tile(){
-        
+        color = new Color(rand.nextInt(256),rand.nextInt(256),rand.nextInt(256));
     }
     
     public void draw(Graphics g,int x,int y,int width,int height){
