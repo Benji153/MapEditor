@@ -7,22 +7,34 @@ package MapEditorCustom;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 /**
  *
  * @author benji
  */
-public class WorkPanel extends JPanel{
+public class WorkPanel extends JPanel implements Runnable{
     
     int tileWidth,tileHeight;
     Map map;
+    boolean running = true;
+    Thread update;
+    Color selectedColor = Color.blue;
     
     public WorkPanel(){
         map = new Map();
         map.setClear();
-        tileWidth = 20;
-        tileHeight = 20;
+        tileWidth = 50;
+        tileHeight = 50;
+        update = new Thread(this);
+    }
+    
+    public void newMap(int tilesX,int tilesY){
+        map = new Map();
+        map.setClear();
+        
     }
     
     @Override
@@ -34,6 +46,26 @@ public class WorkPanel extends JPanel{
     
     public void draw(Graphics g){
         map.drawMap(g, tileWidth, tileHeight);
+    }
+
+    
+    public void run() {
+        while(running){
+            repaint();
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(WorkPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+    public void changeTile(int x,int y){
+        map.getTile(x, y, tileWidth, tileHeight).color = selectedColor;
+    }
+    
+    public void setColor(Color c){
+        selectedColor = c;
     }
     
 }

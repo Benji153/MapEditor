@@ -22,6 +22,12 @@ public class Map {
         tiles = new Tile[tilesW][tilesH];
     }
     
+    public Map(int x,int y){
+        tilesW = x;
+        tilesH = y;
+        tiles = new Tile[tilesW][tilesH];
+    }
+    
     public void setClear(){
         for(int y = 0;y<tilesH;y++){
             for(int x = 0;x<tilesW;x++){
@@ -36,6 +42,15 @@ public class Map {
                 tiles[x][y].draw(g, x*tileWidth,y*tileHeight, tileWidth, tileHeight);
             }
         }
+    }
+    
+    public Tile getTile(int x,int y,int tileW,int tileH){
+        int tx = x/tileW;
+        int ty = y/tileH;
+        if(tx <tilesW && ty<tileH){
+            return tiles[tx][ty];
+        }
+        else return null;
     }
     
 }
