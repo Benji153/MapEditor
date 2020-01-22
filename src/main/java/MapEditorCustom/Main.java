@@ -71,10 +71,10 @@ public class Main {
         });
         JMenuItem save = new JMenuItem("Save");
         save.addActionListener((ActionEvent ev) -> {
-            JButton saveChoice = new JButton("Save");
+            
             JFileChooser fc = new JFileChooser();
             fc.setApproveButtonText("Save");
-            if(fc.showOpenDialog(saveChoice) == JFileChooser.APPROVE_OPTION){
+            if(fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
             try {
                 fh.saveFile(fc.getSelectedFile().getAbsolutePath());
             } catch (IOException ex) {
@@ -84,9 +84,8 @@ public class Main {
         });
         JMenuItem load = new JMenuItem("Load");
         load.addActionListener((ActionEvent ev) -> {
-            JButton openChoice = new JButton("Open");
             JFileChooser fc = new JFileChooser();
-            if(fc.showOpenDialog(openChoice) == JFileChooser.APPROVE_OPTION){
+            if(fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
             try {
                 fh.loadFile(fc.getSelectedFile().getAbsolutePath());
             } catch (IOException | ClassNotFoundException ex) {
