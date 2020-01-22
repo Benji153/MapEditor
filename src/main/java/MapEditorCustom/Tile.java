@@ -14,7 +14,7 @@ import java.util.Random;
  *
  * @author benji
  */
-public class Tile {
+public class Tile implements java.io.Serializable{
     
     Image img;
     Color color;

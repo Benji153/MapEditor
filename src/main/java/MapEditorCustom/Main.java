@@ -9,10 +9,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -37,7 +42,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
+        
+        
         //initialize list of images for map building
         ArrayList<Color> sprites = new ArrayList();
         sprites.add(Color.RED);
@@ -52,6 +58,7 @@ public class Main {
         WorkPanel mainSpace = new WorkPanel();
         mainSpace.addMouseListener(new WorkPanelListener(mainSpace));
         mainSpace.update.start();
+        FileHandler fh = new FileHandler(mainSpace.map);
 
         //Building the menu bar
         JMenuBar menuBar = new JMenuBar();
@@ -61,6 +68,31 @@ public class Main {
         JMenuItem exit = new JMenuItem("Exit");
         exit.addActionListener((ActionEvent ev) -> {
             System.exit(0);
+        });
+        JMenuItem save = new JMenuItem("Save");
+        save.addActionListener((ActionEvent ev) -> {
+            JButton saveChoice = new JButton("Save");
+            JFileChooser fc = new JFileChooser();
+            fc.setApproveButtonText("Save");
+            if(fc.showOpenDialog(saveChoice) == JFileChooser.APPROVE_OPTION){
+            try {
+                fh.saveFile(fc.getSelectedFile().getAbsolutePath());
+            } catch (IOException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            }
+        });
+        JMenuItem load = new JMenuItem("Load");
+        load.addActionListener((ActionEvent ev) -> {
+            JButton openChoice = new JButton("Open");
+            JFileChooser fc = new JFileChooser();
+            if(fc.showOpenDialog(openChoice) == JFileChooser.APPROVE_OPTION){
+            try {
+                fh.loadFile(fc.getSelectedFile().getAbsolutePath());
+            } catch (IOException | ClassNotFoundException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            }
         });
         //New Map Button
         JMenuItem newMap = new JMenuItem("New");
@@ -83,7 +115,7 @@ public class Main {
                 System.out.println("x value: " + xField.getText());
                 System.out.println("y value: " + yField.getText());
                 try {
-                    mainSpace.newMap(Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()));
+                    mainSpace.map.newMap(Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()));
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(null,
                             "You need to enter numbers for the values!.",
@@ -93,8 +125,10 @@ public class Main {
             }
 
         });
-        file.add(exit);
+        file.add(save);
+        file.add(load);
         file.add(newMap);
+        file.add(exit);
         menuBar.add(file);
 
         //Building the ListView

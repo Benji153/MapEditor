@@ -53,4 +53,11 @@ public class Map {
         else return null;
     }
     
+    public void newMap(int tX,int tY){
+        tilesW = tX;
+        tilesH = tY;
+        tiles = new Tile[tilesW][tilesH];
+        setClear();
+    }
+    
 }
