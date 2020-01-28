@@ -52,6 +52,13 @@ public class Map {
         }
         else return null;
     }
+    public void setTile(int x,int y,int tileW,int tileH,Tile t){
+        int tx = x/tileW;
+        int ty = y/tileH;
+        if(tx <tilesW && ty<tileH){
+            tiles[tx][ty] = t;
+        }
+    }
     
     public void newMap(int tX,int tY){
         tilesW = tX;

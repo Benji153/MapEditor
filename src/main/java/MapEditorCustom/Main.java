@@ -8,6 +8,7 @@ package MapEditorCustom;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,10 +46,8 @@ public class Main {
         
         
         //initialize list of images for map building
-        ArrayList<Color> sprites = new ArrayList();
-        sprites.add(Color.RED);
-        sprites.add(Color.BLUE);
-        sprites.add(Color.GREEN);
+        ArrayList<Tile> tiles = new ArrayList();
+        
 
         JFrame window = new JFrame("Map Maker");
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -59,7 +58,16 @@ public class Main {
         mainSpace.addMouseListener(new WorkPanelListener(mainSpace));
         mainSpace.update.start();
         FileHandler fh = new FileHandler(mainSpace.map);
-
+        ImageHandler ih = new ImageHandler();
+        
+        //Building the ListView
+        JList list = new JList(tiles.toArray());
+        JScrollPane scrollPane = new JScrollPane(list);
+        scrollPane.setPreferredSize(new Dimension(150, 10));
+        list.addListSelectionListener((ListSelectionEvent e) -> {
+            mainSpace.setTile((Tile) list.getSelectedValue());
+        });
+        
         //Building the menu bar
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -129,14 +137,29 @@ public class Main {
         file.add(newMap);
         file.add(exit);
         menuBar.add(file);
-
-        //Building the ListView
-        JList list = new JList(sprites.toArray());
-        JScrollPane scrollPane = new JScrollPane(list);
-        scrollPane.setPreferredSize(new Dimension(150, 10));
-        list.addListSelectionListener((ListSelectionEvent e) -> {
-            mainSpace.setColor((Color) list.getSelectedValue());
+        
+        //Tile Menu
+        JMenu tile = new JMenu("Tiles");
+        JMenuItem newSpriteSheet = new JMenuItem("Load Sprite Sheet");
+        newSpriteSheet.addActionListener((ActionEvent ev) -> {
+            JFileChooser fc = new JFileChooser();
+            if(fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
+            try {
+                Image[] imgs = ih.sliceSpriteSheet(fc.getSelectedFile().getAbsolutePath(), 2, 2, 20, 20);
+                for (Image img : imgs) {
+                    Tile t = new Tile(img);
+                    tiles.add(t);
+                    list.setListData(tiles.toArray());
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            }
         });
+        tile.add(newSpriteSheet);
+        menuBar.add(tile);
+
+        
 
         //adding components to the frame
         window.add(menuBar, BorderLayout.PAGE_START);

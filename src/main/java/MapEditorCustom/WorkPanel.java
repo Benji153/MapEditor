@@ -21,7 +21,7 @@ public class WorkPanel extends JPanel implements Runnable{
     Map map;
     boolean running = true;
     Thread update;
-    Color selectedColor = Color.blue;
+    Tile selectedTile = new Tile();
     
     public WorkPanel(){
         map = new Map();
@@ -51,6 +51,7 @@ public class WorkPanel extends JPanel implements Runnable{
     
     public void draw(Graphics g){
         map.drawMap(g, tileWidth, tileHeight);
+        g.drawImage(selectedTile.img, 300, 300, this);
     }
 
     
@@ -66,11 +67,12 @@ public class WorkPanel extends JPanel implements Runnable{
     }
     
     public void changeTile(int x,int y){
-        map.getTile(x, y, tileWidth, tileHeight).color = selectedColor;
+        
+        map.setTile(x, y, tileWidth, tileHeight,new Tile(selectedTile));
     }
     
-    public void setColor(Color c){
-        selectedColor = c;
+    public void setTile(Tile t){
+        selectedTile = t;
     }
     
 }
