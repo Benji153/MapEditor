@@ -31,7 +31,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 /**
  *
@@ -46,22 +45,21 @@ public class Main {
         
         
         //initialize list of images for map building
-        ArrayList<Tile> tiles = new ArrayList();
+        Map map = new Map();
         
-
         JFrame window = new JFrame("Map Maker");
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setSize(1000, 750);
 
         //building the workspace
-        WorkPanel mainSpace = new WorkPanel();
+        WorkPanel mainSpace = new WorkPanel(map);
         mainSpace.addMouseListener(new WorkPanelListener(mainSpace));
         mainSpace.update.start();
-        FileHandler fh = new FileHandler(mainSpace.map);
+        FileHandler fh = new FileHandler(map);
         ImageHandler ih = new ImageHandler();
         
         //Building the ListView
-        JList list = new JList(tiles.toArray());
+        JList list = new JList(map.tileSet.getTiles());
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setPreferredSize(new Dimension(150, 10));
         list.addListSelectionListener((ListSelectionEvent e) -> {
@@ -82,6 +80,7 @@ public class Main {
             
             JFileChooser fc = new JFileChooser();
             fc.setApproveButtonText("Save");
+            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             if(fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
             try {
                 fh.saveFile(fc.getSelectedFile().getAbsolutePath());
@@ -93,9 +92,11 @@ public class Main {
         JMenuItem load = new JMenuItem("Load");
         load.addActionListener((ActionEvent ev) -> {
             JFileChooser fc = new JFileChooser();
+            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             if(fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
             try {
                 fh.loadFile(fc.getSelectedFile().getAbsolutePath());
+                list.setListData(map.tileSet.getTiles());
             } catch (IOException | ClassNotFoundException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -147,9 +148,9 @@ public class Main {
             try {
                 Image[] imgs = ih.sliceSpriteSheet(fc.getSelectedFile().getAbsolutePath(), 2, 2, 20, 20);
                 for (Image img : imgs) {
-                    Tile t = new Tile(img);
-                    tiles.add(t);
-                    list.setListData(tiles.toArray());
+                    Tile t = new Tile();
+                    map.tileSet.addTile(t,img);
+                    list.setListData(map.tileSet.getTiles());
                 }
             } catch (IOException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);

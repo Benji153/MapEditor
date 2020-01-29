@@ -16,31 +16,27 @@ import java.util.Random;
  */
 public class Tile implements java.io.Serializable {
 
-    transient Image img = null;
     Color color;
     Random rand = new Random();
+    int id;
 
     public Tile() {
         color = new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+        this.id = 0;
     }
-
-    public Tile(Image img) {
-        this.img = img;
+    
+    public Tile(int id){
         color = new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
+        this.id = id;
     }
-
+    
     public Tile(Tile other) {
-        this.img = other.img;
         this.color = other.color;
+        this.id = other.id;
     }
-
-    public void draw(Graphics g, int x, int y, int width, int height) {
-        if (img != null) {
-            g.drawImage(img, x, y, width, height, null);
-        } else {
-            g.setColor(color);
-            g.fillRect(x, y, width, height);
-        }
+    
+    public void setId(int id){
+        this.id=id;
     }
 
 }

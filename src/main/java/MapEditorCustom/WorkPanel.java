@@ -23,9 +23,9 @@ public class WorkPanel extends JPanel implements Runnable{
     Thread update;
     Tile selectedTile = new Tile();
     
-    public WorkPanel(){
-        map = new Map();
-        map.setClear();
+    public WorkPanel(Map map){
+        this.map = map;
+        this.map.setClear();
         tileWidth = 25;
         tileHeight = 25;
         update = new Thread(this);
@@ -51,7 +51,7 @@ public class WorkPanel extends JPanel implements Runnable{
     
     public void draw(Graphics g){
         map.drawMap(g, tileWidth, tileHeight);
-        g.drawImage(selectedTile.img, 300, 300, this);
+        g.drawImage(map.tileSet.getImage(selectedTile.id), 300, 300, this);
     }
 
     
@@ -67,7 +67,6 @@ public class WorkPanel extends JPanel implements Runnable{
     }
     
     public void changeTile(int x,int y){
-        
         map.setTile(x, y, tileWidth, tileHeight,new Tile(selectedTile));
     }
     
