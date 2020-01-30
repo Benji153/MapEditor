@@ -61,6 +61,7 @@ public class Main {
         JList list = new JList(map.tileSet.getTiles());
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setPreferredSize(new Dimension(150, 10));
+        list.setCellRenderer(new PictureListRenderer(map));
         list.addListSelectionListener((ListSelectionEvent e) -> {
             if(!list.isSelectionEmpty())
                 mainSpace.setTile((Tile) list.getSelectedValue());
