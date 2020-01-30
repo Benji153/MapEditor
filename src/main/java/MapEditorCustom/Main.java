@@ -42,11 +42,10 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
-        
+
         //initialize list of images for map building
         Map map = new Map();
-        
+
         JFrame window = new JFrame("Map Maker");
         window.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         window.setSize(1000, 750);
@@ -57,7 +56,7 @@ public class Main {
         mainSpace.update.start();
         FileHandler fh = new FileHandler(map);
         ImageHandler ih = new ImageHandler();
-        
+
         //Building the ListView
         JList list = new JList(map.tileSet.getTiles());
         JScrollPane scrollPane = new JScrollPane(list);
@@ -65,7 +64,7 @@ public class Main {
         list.addListSelectionListener((ListSelectionEvent e) -> {
             mainSpace.setTile((Tile) list.getSelectedValue());
         });
-        
+
         //Building the menu bar
         JMenuBar menuBar = new JMenuBar();
         menuBar.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -77,29 +76,29 @@ public class Main {
         });
         JMenuItem save = new JMenuItem("Save");
         save.addActionListener((ActionEvent ev) -> {
-            
+
             JFileChooser fc = new JFileChooser();
             fc.setApproveButtonText("Save");
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            if(fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
-            try {
-                fh.saveFile(fc.getSelectedFile().getAbsolutePath());
-            } catch (IOException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                try {
+                    fh.saveFile(fc.getSelectedFile().getAbsolutePath());
+                } catch (IOException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         JMenuItem load = new JMenuItem("Load");
         load.addActionListener((ActionEvent ev) -> {
             JFileChooser fc = new JFileChooser();
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            if(fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
-            try {
-                fh.loadFile(fc.getSelectedFile().getAbsolutePath());
-                list.setListData(map.tileSet.getTiles());
-            } catch (IOException | ClassNotFoundException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                try {
+                    fh.loadFile(fc.getSelectedFile().getAbsolutePath());
+                    list.setListData(map.tileSet.getTiles());
+                } catch (IOException | ClassNotFoundException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         //New Map Button
@@ -138,29 +137,61 @@ public class Main {
         file.add(newMap);
         file.add(exit);
         menuBar.add(file);
-        
+
         //Tile Menu
         JMenu tile = new JMenu("Tiles");
         JMenuItem newSpriteSheet = new JMenuItem("Load Sprite Sheet");
         newSpriteSheet.addActionListener((ActionEvent ev) -> {
             JFileChooser fc = new JFileChooser();
-            if(fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION){
-            try {
-                Image[] imgs = ih.sliceSpriteSheet(fc.getSelectedFile().getAbsolutePath(), 2, 2, 20, 20);
-                for (Image img : imgs) {
-                    Tile t = new Tile();
-                    map.tileSet.addTile(t,img);
-                    list.setListData(map.tileSet.getTiles());
+            if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                try {
+                    JTextField xField = new JTextField(5);
+                    JTextField yField = new JTextField(5);
+                    JTextField wField = new JTextField(5);
+                    JTextField hField = new JTextField(5);
+
+                    JPanel newMapChooser = new JPanel();
+                    newMapChooser.setLayout(new BoxLayout(newMapChooser, BoxLayout.PAGE_AXIS));
+                    newMapChooser.add(new JLabel("Horizontal Sprite Count:"));
+                    newMapChooser.add(xField);
+                    newMapChooser.add(Box.createHorizontalStrut(15)); // a spacer
+                    newMapChooser.add(new JLabel("Vertical Sprite Count:"));
+                    newMapChooser.add(yField);
+                    newMapChooser.add(Box.createHorizontalStrut(15)); // a spacer
+                    newMapChooser.add(new JLabel("Sprite Width:"));
+                    newMapChooser.add(wField);
+                    newMapChooser.add(Box.createHorizontalStrut(15)); // a spacer
+                    newMapChooser.add(new JLabel("Sprite Height:"));
+                    newMapChooser.add(hField);
+
+                    int result = JOptionPane.showConfirmDialog(null, newMapChooser,
+                            "Please Sprite Sheet Information", JOptionPane.OK_CANCEL_OPTION);
+                    if (result == JOptionPane.OK_OPTION) {
+                        System.out.println("x value: " + xField.getText());
+                        System.out.println("y value: " + yField.getText());
+                        try {
+                            Image[] imgs = ih.sliceSpriteSheet(fc.getSelectedFile().getAbsolutePath(), Integer.parseInt(xField.getText()),
+                                    Integer.parseInt(yField.getText()), Integer.parseInt(wField.getText()), Integer.parseInt(hField.getText()));
+                            for (Image img : imgs) {
+                                Tile t = new Tile();
+                                map.tileSet.addTile(t, img);
+                                list.setListData(map.tileSet.getTiles());
+                            }
+                        } catch (NumberFormatException e) {
+                            JOptionPane.showMessageDialog(null,
+                                    "You need to enter numbers for the values!.",
+                                    "Wrong input",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+
+                } catch (IOException ex) {
+                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } catch (IOException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-            }
             }
         });
         tile.add(newSpriteSheet);
         menuBar.add(tile);
-
-        
 
         //adding components to the frame
         window.add(menuBar, BorderLayout.PAGE_START);

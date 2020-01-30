@@ -45,8 +45,6 @@ public class Map {
             for(int x = 0;x<tilesW;x++){
                 Tile t = tiles[x][y];
                 if(t.id != 0){
-                    System.out.print(tileSet.tiles.size() + " Tiles -  ");
-                    System.out.println(tileSet.images.size() + " Images");
                     g.drawImage(tileSet.getImage(t.id), x*tileWidth,y*tileHeight, tileWidth, tileHeight,null);
                 }else{
                     g.setColor(t.color);

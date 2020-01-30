@@ -34,6 +34,7 @@ public class WorkPanel extends JPanel implements Runnable{
     public void newMap(int tilesX,int tilesY){
         map = new Map(tilesX,tilesY);
         map.setClear();
+        selectedTile = new Tile();
         
     }
     

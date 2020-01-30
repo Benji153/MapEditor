@@ -51,13 +51,6 @@ public class TileSet {
         tiles.add(t);
         t.setId(tiles.size());
         images.add(img);
-        if(img == null){
-            System.out.println("NullImage");
-        }else{
-            System.out.println("We got something");
-            System.out.println(images.size());
-        }
-        System.out.println(images.size() + " Should be the new array size");
     }
     
     //this code will probably cause problems as current tiles on map will not have their tile id updated yet
@@ -70,10 +63,8 @@ public class TileSet {
     }
     
     public Image getImage(int id){
-        System.out.println(images.size());
         for(int i = 1;i<=images.size();i++){
             if(i == id){
-                System.out.println("BigBeans");
                 return images.get(i-1);
                 
             }
