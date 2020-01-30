@@ -14,41 +14,45 @@ import java.awt.Graphics;
 public class Map {
     
     Tile[][] tiles;
-    int tilesW,tilesH;
+    int tilesX,tilesY,tilesW,tilesH;
     TileSet tileSet;
     
     public Map(){
+        tilesX = 20;
+        tilesY = 20;
         tilesW = 20;
         tilesH = 20;
-        tiles = new Tile[tilesW][tilesH];
+        tiles = new Tile[tilesX][tilesY];
         tileSet = new TileSet();
     }
     
-    public Map(int x,int y){
-        tilesW = x;
-        tilesH = y;
-        tiles = new Tile[tilesW][tilesH];
+    public Map(int x,int y,int w,int h){
+        tilesX = x;
+        tilesY = y;
+        tilesW = w;
+        tilesH = h;
+        tiles = new Tile[tilesX][tilesY];
         tileSet = new TileSet();
     }
     
     public void setClear(){
-        for(int y = 0;y<tilesH;y++){
-            for(int x = 0;x<tilesW;x++){
+        for(int y = 0;y<tilesY;y++){
+            for(int x = 0;x<tilesX;x++){
                 tiles[x][y] = new Tile();
             }
         }
         tileSet.clear();
     }
     
-    public void drawMap(Graphics g,int tileWidth,int tileHeight){
-        for(int y = 0;y<tilesH;y++){
-            for(int x = 0;x<tilesW;x++){
+    public void drawMap(Graphics g){
+        for(int y = 0;y<tilesY;y++){
+            for(int x = 0;x<tilesX;x++){
                 Tile t = tiles[x][y];
                 if(t.id != 0){
-                    g.drawImage(tileSet.getImage(t.id), x*tileWidth,y*tileHeight, tileWidth, tileHeight,null);
+                    g.drawImage(tileSet.getImage(t.id), x*tilesW,y*tilesH, tilesW, tilesH,null);
                 }else{
                     g.setColor(t.color);
-                    g.fillRect(x*tileWidth, y*tileHeight, tileWidth, tileHeight);
+                    g.fillRect(x*tilesW, y*tilesH, tilesW, tilesH);
                 }
             }
         }
@@ -57,24 +61,26 @@ public class Map {
     public Tile getTile(int x,int y,int tileW,int tileH){
         int tx = x/tileW;
         int ty = y/tileH;
-        if(tx <tilesW && ty<tileH){
+        if(tx <tilesX && ty<tileH){
             return tiles[tx][ty];
         }
         else return null;
     }
-    public void setTile(int x,int y,int tileW,int tileH,Tile t){
-        int tx = x/tileW;
-        int ty = y/tileH;
-        if(tx <tilesW && ty<tileH){
+    public void setTile(int x,int y,Tile t){
+        int tx = x/tilesW;
+        int ty = y/tilesH;
+        if(tx <tilesX && ty<tilesY){
             System.out.println(tiles[tx][ty].id);
             tiles[tx][ty] = t;
         }
     }
     
-    public void newMap(int tX,int tY){
-        tilesW = tX;
-        tilesH = tY;
-        tiles = new Tile[tilesW][tilesH];
+    public void newMap(int tX,int tY,int tW,int tH){
+        tilesX = tX;
+        tilesY = tY;
+        tilesW = tW;
+        tilesH = tH;
+        tiles = new Tile[tilesX][tilesY];
         setClear();
     }
  

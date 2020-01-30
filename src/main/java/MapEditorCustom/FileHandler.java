@@ -28,20 +28,22 @@ public class FileHandler {
         File file = new File(path);
         file.mkdir();
         try (FileOutputStream saveFile = new FileOutputStream(path + "\\Tiles.ben"); ObjectOutputStream save = new ObjectOutputStream(saveFile)) {
+            save.writeInt(map.tilesX);
+            save.writeInt(map.tilesY);
             save.writeInt(map.tilesW);
             save.writeInt(map.tilesH);
             save.writeInt(map.getTileCount());
-            for (int y = 0; y < map.tilesH; y++) {
-                for (int x = 0; x < map.tilesW; x++) {
+            for (int y = 0; y < map.tilesY; y++) {
+                for (int x = 0; x < map.tilesX; x++) {
                     save.writeObject(map.tiles[x][y]);
                 }
             }
             //needs to be fixed to support different tile sizes
-            BufferedImage bufferedImage = new BufferedImage(map.getTileCount() * 20, 20, BufferedImage.TYPE_INT_RGB);
+            BufferedImage bufferedImage = new BufferedImage(map.getTileCount() * map.tilesW, map.tilesH, BufferedImage.TYPE_INT_RGB);
             Graphics2D g2d = bufferedImage.createGraphics();
             
             for (int i = 0; i < map.getTileCount(); i++) {
-                g2d.drawImage(map.tileSet.getImage(i+1), i * 20, 0, 20, 20, null);
+                g2d.drawImage(map.tileSet.getImage(i+1), i * map.tilesW, 0, map.tilesW, map.tilesH, null);
             }
             g2d.dispose();
             file = new File(path + "\\TileSet.png");
@@ -54,20 +56,21 @@ public class FileHandler {
         try (FileInputStream saveFile = new FileInputStream(path + "\\Tiles.ben"); ObjectInputStream restore = new ObjectInputStream(saveFile)) {
             int tX = restore.readInt();
             int tY = restore.readInt();
+            int tW = restore.readInt();
+            int tH = restore.readInt();
             int tileCount = restore.readInt();
-            map.newMap(tX, tY);
+            map.newMap(tX,tY,tW,tH);
             
             BufferedImage sheet = ImageIO.read(new File(path + "\\TileSet.png"));
 
             for (int i = 0; i < tileCount; i++) {
-                Image img = sheet.getSubimage(i * 20, 0, 20, 20);
+                Image img = sheet.getSubimage(i * map.tilesW, 0, map.tilesW, map.tilesH);
                 Tile t = new Tile();
-                t.setId(i);
                 map.tileSet.addTile(t,img);
             }
 
-            for (int y = 0; y < map.tilesH; y++) {
-                for (int x = 0; x < map.tilesW; x++) {
+            for (int y = 0; y < map.tilesY; y++) {
+                for (int x = 0; x < map.tilesX; x++) {
                     map.tiles[x][y] = (Tile) restore.readObject();
                     for (int i = 0; i < map.getTileCount(); i++) {
                         if (map.tiles[x][y] != null && map.tileSet.getTiles()[i] != null) {

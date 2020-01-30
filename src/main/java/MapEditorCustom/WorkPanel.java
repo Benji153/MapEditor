@@ -7,6 +7,7 @@ package MapEditorCustom;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JPanel;
@@ -15,49 +16,58 @@ import javax.swing.JPanel;
  *
  * @author benji
  */
-public class WorkPanel extends JPanel implements Runnable{
-    
-    int tileWidth,tileHeight;
+public class WorkPanel extends JPanel implements Runnable {
+
+    int tilesX, tilesY, tilesW, tilesH;
+    //unused scaling for later zoom
+    double scale = 1.0;
     Map map;
     boolean running = true;
     Thread update;
-    Tile selectedTile = new Tile();
-    
-    public WorkPanel(Map map){
+    Tile selectedTile;
+
+    public WorkPanel(Map map) {
         this.map = map;
         this.map.setClear();
-        tileWidth = 25;
-        tileHeight = 25;
+        tilesX = 25;
+        tilesY = 25;
+        tilesW = 20;
+        tilesH = 20;
+        selectedTile = new Tile();
         update = new Thread(this);
     }
-    
-    public void newMap(int tilesX,int tilesY){
-        map = new Map(tilesX,tilesY);
+
+    public void newMap(int tilesX, int tilesY, int tilesW, int tilesH) {
+        map = new Map(tilesX, tilesY, tilesW, tilesH);
         map.setClear();
-        selectedTile = new Tile();
-        
+        Tile tmp = new Tile();
+        tmp.setId(0);
+        selectedTile = tmp;
+
     }
-    
+
     @Override
     public void paintComponent(Graphics g) {
         g.setColor(Color.gray);
-        g.fillRect(0,0,this.getWidth(),this.getHeight());
+        g.fillRect(0, 0, this.getWidth(), this.getHeight());
         g.setColor(Color.BLACK);
         int scrWidthDiv = this.getWidth() / 5;
-        for(int i = 0;i<5;i++){
-            g.drawLine(i * scrWidthDiv, this.getHeight(), (i+1)*scrWidthDiv, 0);
+        for (int i = 0; i < 5; i++) {
+            g.drawLine(i * scrWidthDiv, this.getHeight(), (i + 1) * scrWidthDiv, 0);
         }
         draw(g);
     }
-    
-    public void draw(Graphics g){
-        map.drawMap(g, tileWidth, tileHeight);
-        g.drawImage(map.tileSet.getImage(selectedTile.id), 300, 300, this);
+
+    public void draw(Graphics g) {
+        map.drawMap(g);
+        Image selected = map.tileSet.getImage(selectedTile.id);
+        if (selected != null) {
+            g.drawImage(selected, 300, 300, this);
+        }
     }
 
-    
     public void run() {
-        while(running){
+        while (running) {
             repaint();
             try {
                 Thread.sleep(100);
@@ -66,13 +76,13 @@ public class WorkPanel extends JPanel implements Runnable{
             }
         }
     }
-    
-    public void changeTile(int x,int y){
-        map.setTile(x, y, tileWidth, tileHeight,new Tile(selectedTile));
+
+    public void changeTile(int x, int y) {
+        map.setTile(x, y, new Tile(selectedTile));
     }
-    
-    public void setTile(Tile t){
+
+    public void setTile(Tile t) {
         selectedTile = t;
     }
-    
+
 }

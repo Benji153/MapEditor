@@ -6,6 +6,7 @@
 package MapEditorCustom;
 
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /**
@@ -69,7 +70,7 @@ public class TileSet {
                 
             }
         }
-        return null;
+        return new BufferedImage(1,1,BufferedImage.TYPE_INT_RGB);
     }
     
     public void clear(){

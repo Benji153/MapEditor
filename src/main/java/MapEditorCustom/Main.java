@@ -62,7 +62,8 @@ public class Main {
         JScrollPane scrollPane = new JScrollPane(list);
         scrollPane.setPreferredSize(new Dimension(150, 10));
         list.addListSelectionListener((ListSelectionEvent e) -> {
-            mainSpace.setTile((Tile) list.getSelectedValue());
+            if(!list.isSelectionEmpty())
+                mainSpace.setTile((Tile) list.getSelectedValue());
         });
 
         //Building the menu bar
@@ -90,10 +91,12 @@ public class Main {
         });
         JMenuItem load = new JMenuItem("Load");
         load.addActionListener((ActionEvent ev) -> {
+            list.clearSelection();
             JFileChooser fc = new JFileChooser();
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                 try {
+                    
                     fh.loadFile(fc.getSelectedFile().getAbsolutePath());
                     list.setListData(map.tileSet.getTiles());
                 } catch (IOException | ClassNotFoundException ex) {
@@ -107,6 +110,8 @@ public class Main {
 
             JTextField xField = new JTextField(5);
             JTextField yField = new JTextField(5);
+            JTextField wField = new JTextField(5);
+            JTextField hField = new JTextField(5);
 
             JPanel newMapChooser = new JPanel();
             newMapChooser.setLayout(new BoxLayout(newMapChooser, BoxLayout.PAGE_AXIS));
@@ -115,6 +120,12 @@ public class Main {
             newMapChooser.add(Box.createHorizontalStrut(15)); // a spacer
             newMapChooser.add(new JLabel("Vertical Tile Count:"));
             newMapChooser.add(yField);
+            newMapChooser.add(Box.createHorizontalStrut(15)); // a spacer
+            newMapChooser.add(new JLabel("Tile Width:"));
+            newMapChooser.add(wField);
+            newMapChooser.add(Box.createHorizontalStrut(15)); // a spacer
+            newMapChooser.add(new JLabel("tile Height:"));
+            newMapChooser.add(hField);
 
             int result = JOptionPane.showConfirmDialog(null, newMapChooser,
                     "Please Enter X and Y Values", JOptionPane.OK_CANCEL_OPTION);
@@ -122,7 +133,7 @@ public class Main {
                 System.out.println("x value: " + xField.getText());
                 System.out.println("y value: " + yField.getText());
                 try {
-                    mainSpace.map.newMap(Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()));
+                    mainSpace.map.newMap(Integer.parseInt(xField.getText()), Integer.parseInt(yField.getText()),Integer.parseInt(wField.getText()),Integer.parseInt(hField.getText()));
                 } catch (NumberFormatException e) {
                     JOptionPane.showMessageDialog(null,
                             "You need to enter numbers for the values!.",
@@ -145,6 +156,7 @@ public class Main {
             JFileChooser fc = new JFileChooser();
             if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                 try {
+                    list.clearSelection();
                     JTextField xField = new JTextField(5);
                     JTextField yField = new JTextField(5);
                     JTextField wField = new JTextField(5);

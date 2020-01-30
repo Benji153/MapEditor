@@ -19,6 +19,7 @@ public class Tile implements java.io.Serializable {
     Color color;
     Random rand = new Random();
     int id;
+    int tileW,tileH;
 
     public Tile() {
         color = new Color(rand.nextInt(256), rand.nextInt(256), rand.nextInt(256));
